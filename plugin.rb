@@ -41,10 +41,10 @@ after_initialize do
         render status: 404
       end
 
-      if not (defined? params['key'] && (params['key'] == SiteSetting.telegram_secret))
+      secret = SiteSetting.telegram_secret
+      if secret.blank? || !ActiveSupport::SecurityUtils.secure_compare(params[:key].to_s, secret)
         Rails.logger.error("Telegram hook called with incorrect key")
-        render status: 403
-        return
+        return render(body: nil, status: 403)
       end
 
       # If it's a new message (telegram also sends hooks for other reasons that we don't care about)
