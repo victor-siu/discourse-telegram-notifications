@@ -24,6 +24,10 @@ module DiscourseTelegramNotifications
       return self.doRequest('setWebhook', message)
     end
 
+    def self.deleteWebhook
+      return self.doRequest('deleteWebhook', {})
+    end
+
     def self.editKeyboard(message)
       return self.doRequest('editMessageReplyMarkup', message)
     end
