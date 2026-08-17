@@ -272,8 +272,7 @@ after_initialize do
           scope =
             PluginStoreRow
               .where(plugin_name: "telegram-notifications")
-              .where("key LIKE 'message%'")
-
+              .where("key LIKE 'message\\_%'")
           threshold_id = scope.order(id: :desc).offset(keep).limit(1).pick(:id)
           return if threshold_id.nil?
 
