@@ -141,7 +141,6 @@ after_initialize do
             string = I18n.t("discourse_telegram_notifications.like-failed")
           end
 
-          DiscourseTelegramNotifications::TelegramNotifier.answerCallback(params['callback_query']['id'], string)
         elsif data[0] == 'unlike'
 
           begin
