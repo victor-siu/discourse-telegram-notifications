@@ -32,7 +32,7 @@ after_initialize do
   end
 
   class DiscourseTelegramNotifications::TelegramController < ::ApplicationController
-    requires_plugin DiscourseTelegramNotifications::PLUGIN_NAME
+    requires_plugin "discourse-telegram-notifications"
 
     skip_before_action :check_xhr, :preload_json, :verify_authenticity_token, :redirect_to_login_if_required
 
