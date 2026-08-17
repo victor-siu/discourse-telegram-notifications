@@ -256,5 +256,29 @@ after_initialize do
         end
       end
 
+      # The message_id -> post_id entries written on every outbound
+      # notification (see SendTelegramNotifications) are never removed, so
+      # plugin_store_rows grows without bound. That table has no timestamp
+      # columns, but its ids are monotonic, so keep only the most recent KEEP
+      # mappings - routing a Telegram reply back to a very old post is not
+      # useful anyway.
+      class PruneTelegramMessageMap < ::Jobs::Scheduled
+        every 1.day
+
+        KEEP = 10_000
+
+        def execute(args)
+          scope =
+            PluginStoreRow
+              .where(plugin_name: "telegram-notifications")
+              .where("key LIKE 'message%'")
+
+          threshold_id = scope.order(id: :desc).offset(KEEP).limit(1).pick(:id)
+          return if threshold_id.nil?
+
+          scope.where("id <= ?", threshold_id).delete_all
+        end
+      end
+
     end
 end
